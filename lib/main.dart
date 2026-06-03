@@ -152,9 +152,12 @@ class _GameScreenState extends State<GameScreen> {
             onSelected: (value) {
               if (value == 'check_updates') {
                 UpdateService.check(context, silent: false);
+              } else if (value.startsWith('theme_')) {
+                final idx = int.parse(value.substring(6));
+                widget.onThemeChanged(GameTheme.themes[idx]);
               }
             },
-            itemBuilder: (context) => [
+            itemBuilder: (ctx) => [
               PopupMenuItem<String>(
                 enabled: false,
                 child: Text(
@@ -177,38 +180,29 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ),
-              ...GameTheme.themes.map(
-                (t) => PopupMenuItem<String>(
-                  value: 'theme_${t.name}',
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onThemeChanged(t);
-                  },
+              for (int i = 0; i < GameTheme.themes.length; i++)
+                CheckedPopupMenuItem<String>(
+                  value: 'theme_$i',
+                  checked: widget.theme == GameTheme.themes[i],
                   child: Row(
                     children: [
                       Container(
                         width: 20,
                         height: 20,
                         decoration: BoxDecoration(
-                          color: t.background,
+                          color: GameTheme.themes[i].background,
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: t.accent, width: 2),
+                          border: Border.all(
+                            color: GameTheme.themes[i].accent,
+                            width: 2,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Text(
-                        t.name,
-                        style: TextStyle(
-                          fontWeight: widget.theme == t ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                      if (widget.theme == t) const Spacer(),
-                      if (widget.theme == t)
-                        Icon(Icons.check, size: 18, color: theme.accent),
+                      Text(GameTheme.themes[i].name),
                     ],
                   ),
                 ),
-              ),
               const PopupMenuDivider(),
               const PopupMenuItem<String>(
                 value: 'check_updates',
