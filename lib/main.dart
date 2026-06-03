@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'game/tic_tac_toe_game.dart';
+import 'services/update_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late TicTacToeGame _game;
+  String _version = '';
 
   @override
   void initState() {
@@ -41,6 +43,12 @@ class _GameScreenState extends State<GameScreen> {
         setState(() {});
       }
     });
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final version = await UpdateService.currentVersion;
+    if (mounted) setState(() => _version = version);
   }
 
   void _resetGame() {
@@ -72,6 +80,44 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.settings),
+            color: const Color(0xFF2A2A4E),
+            onSelected: (value) {
+              if (value == 'check_updates') {
+                UpdateService.check(context, silent: false);
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                enabled: false,
+                child: Text(
+                  _version.isNotEmpty ? 'Version: v$_version' : 'Version: ...',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: 'check_updates',
+                child: ListTile(
+                  leading: Icon(Icons.system_update, size: 20),
+                  title: Text('Check for updates', style: TextStyle(fontSize: 14)),
+                  contentPadding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: Column(
