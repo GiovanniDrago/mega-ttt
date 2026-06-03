@@ -29,15 +29,25 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Decode keystore
+      - name: Generate keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+          keytool -genkey -v \
+            -keystore android/app/release.keystore \
+            -alias upload \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storetype JKS \
+            -storepass android \
+            -keypass android \
+            -dname "CN=MegaTTT, OU=Dev, O=MegaTTT, L=Unknown, ST=Unknown, C=US" \
+            -noprompt
 
       - name: Create key.properties
         run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storePassword=android" > android/key.properties
+          echo "keyPassword=android" >> android/key.properties
+          echo "keyAlias=upload" >> android/key.properties
           echo "storeFile=release.keystore" >> android/key.properties
 
       - name: Build release APK
