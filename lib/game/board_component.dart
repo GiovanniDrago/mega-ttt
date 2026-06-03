@@ -6,11 +6,19 @@ import 'tic_tac_toe_game.dart';
 
 class BoardComponent extends PositionComponent with TapCallbacks {
   final TicTacToeGame gameRef;
+  final Color gridColor;
+  final Color xColor;
+  final Color oColor;
+  final Color winLineColor;
 
   BoardComponent({
     required this.gameRef,
     required super.position,
     required super.size,
+    required this.gridColor,
+    required this.xColor,
+    required this.oColor,
+    required this.winLineColor,
   });
 
   void refresh() {
@@ -27,7 +35,7 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     super.render(canvas);
 
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = gridColor
       ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
 
@@ -62,9 +70,9 @@ class BoardComponent extends PositionComponent with TapCallbacks {
           final radius = (cellW < cellH ? cellW : cellH) * 0.35;
 
           if (value == 'X') {
-            _drawX(canvas, center, radius, Colors.blue);
+            _drawX(canvas, center, radius, xColor);
           } else {
-            _drawO(canvas, center, radius, Colors.red);
+            _drawO(canvas, center, radius, oColor);
           }
         }
       }
@@ -106,7 +114,7 @@ class BoardComponent extends PositionComponent with TapCallbacks {
 
   void _drawWinLine(Canvas canvas, double cellW, double cellH) {
     final paint = Paint()
-      ..color = Colors.greenAccent
+      ..color = winLineColor
       ..strokeWidth = 8
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;

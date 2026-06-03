@@ -4,11 +4,13 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'board_component.dart';
+import '../models/game_theme.dart';
 
 class TicTacToeGame extends FlameGame with TapCallbacks {
   final VoidCallback onStateChanged;
+  GameTheme theme;
 
-  TicTacToeGame({required this.onStateChanged});
+  TicTacToeGame({required this.onStateChanged, required this.theme});
 
   late BoardComponent board;
 
@@ -25,6 +27,10 @@ class TicTacToeGame extends FlameGame with TapCallbacks {
       gameRef: this,
       position: Vector2.zero(),
       size: size,
+      gridColor: theme.gridColor,
+      xColor: theme.xColor,
+      oColor: theme.oColor,
+      winLineColor: theme.winLineColor,
     );
     add(board);
   }
