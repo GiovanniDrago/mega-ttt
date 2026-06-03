@@ -75,7 +75,9 @@ class _GameScreenState extends State<GameScreen> {
   void didUpdateWidget(covariant GameScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.theme != widget.theme) {
-      _createGame();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(_createGame);
+      });
     }
   }
 
