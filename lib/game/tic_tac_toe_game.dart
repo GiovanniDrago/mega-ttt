@@ -115,4 +115,15 @@ class TicTacToeGame extends FlameGame with TapCallbacks {
     board.refresh();
     onStateChanged();
   }
+
+  void updateTheme(GameTheme newTheme) {
+    theme = newTheme;
+    board.updateColors(
+      gridColor: newTheme.gridColor,
+      xColor: newTheme.xColor,
+      oColor: newTheme.oColor,
+      winLineColor: newTheme.winLineColor,
+    );
+    board.refresh();
+  }
 }

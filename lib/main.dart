@@ -75,9 +75,8 @@ class _GameScreenState extends State<GameScreen> {
   void didUpdateWidget(covariant GameScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.theme != widget.theme) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(_createGame);
-      });
+      _game.updateTheme(widget.theme);
+      setState(() {});
     }
   }
 
@@ -90,13 +89,14 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
+  void _resetGame() {
+    _game.reset();
+    setState(() {});
+  }
+
   Future<void> _loadVersion() async {
     final version = await UpdateService.currentVersion;
     if (mounted) setState(() => _version = version);
-  }
-
-  void _resetGame() {
-    setState(_createGame);
   }
 
   String _statusMessage() {

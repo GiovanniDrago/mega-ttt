@@ -6,10 +6,10 @@ import 'tic_tac_toe_game.dart';
 
 class BoardComponent extends PositionComponent with TapCallbacks {
   final TicTacToeGame gameRef;
-  final Color gridColor;
-  final Color xColor;
-  final Color oColor;
-  final Color winLineColor;
+  Color gridColor;
+  Color xColor;
+  Color oColor;
+  Color winLineColor;
 
   BoardComponent({
     required this.gameRef,
@@ -20,6 +20,18 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     required this.oColor,
     required this.winLineColor,
   });
+
+  void updateColors({
+    required Color gridColor,
+    required Color xColor,
+    required Color oColor,
+    required Color winLineColor,
+  }) {
+    this.gridColor = gridColor;
+    this.xColor = xColor;
+    this.oColor = oColor;
+    this.winLineColor = winLineColor;
+  }
 
   void refresh() {
     // Trigger redraw
