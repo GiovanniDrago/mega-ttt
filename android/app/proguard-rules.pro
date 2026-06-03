@@ -17,3 +17,7 @@
 
 # Package info
 -keep class androidx.core.** { *; }
+
+# Play Core: not needed for APK builds (deferred components/AAB only)
+-dontwarn com.google.android.play.core.**
+-dontnote com.google.android.play.core.**
