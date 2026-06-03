@@ -30,7 +30,15 @@ class UpdateService {
 
     if (silent && lastCheck == today) return;
 
-    final latest = await _fetchLatestRelease();
+    String? errorMessage;
+    _ReleaseInfo? latest;
+    try {
+      latest = await _fetchLatestRelease();
+    } catch (e) {
+      errorMessage = e.toString();
+      debugPrint('Update check exception: $errorMessage');
+    }
+
     final currentVersion = await _getCurrentVersion();
 
     if (!silent) {
@@ -41,7 +49,7 @@ class UpdateService {
 
     if (latest == null) {
       if (!silent && context.mounted) {
-        _showSnack(context, 'Could not check for updates');
+        _showSnack(context, errorMessage ?? 'Could not check for updates');
       }
       return;
     }
@@ -55,41 +63,40 @@ class UpdateService {
     }
   }
 
-  static Future<_ReleaseInfo?> _fetchLatestRelease() async {
-    try {
-      final currentVersion = await _getCurrentVersion();
-      final uri = Uri.parse(
-        'https://api.github.com/repos/$_owner/$_repo/releases/latest',
-      );
-      final response = await http.get(
-        uri,
-        headers: {
-          'Accept': 'application/vnd.github+json',
-          'User-Agent': 'mega_ttt/$currentVersion',
-        },
-      );
-      if (response.statusCode != 200) return null;
-
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      final tagName = data['tag_name'] as String?;
-      final assets = data['assets'] as List<dynamic>?;
-
-      if (tagName == null) return null;
-
-      String? downloadUrl;
-      if (assets != null && assets.isNotEmpty) {
-        downloadUrl = assets.first['browser_download_url'] as String?;
-      }
-
-      return _ReleaseInfo(
-        version: tagName.replaceFirst('v', ''),
-        downloadUrl:
-            downloadUrl ?? 'https://github.com/$_owner/$_repo/releases/latest',
-      );
-    } catch (e) {
-      debugPrint('Update check error: $e');
-      return null;
+  static Future<_ReleaseInfo> _fetchLatestRelease() async {
+    final currentVersion = await _getCurrentVersion();
+    final uri = Uri.parse(
+      'https://api.github.com/repos/$_owner/$_repo/releases/latest',
+    );
+    final response = await http.get(
+      uri,
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'User-Agent': 'mega_ttt/$currentVersion',
+      },
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Server returned ${response.statusCode}');
     }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final tagName = data['tag_name'] as String?;
+    final assets = data['assets'] as List<dynamic>?;
+
+    if (tagName == null) {
+      throw Exception('No release found');
+    }
+
+    String? downloadUrl;
+    if (assets != null && assets.isNotEmpty) {
+      downloadUrl = assets.first['browser_download_url'] as String?;
+    }
+
+    return _ReleaseInfo(
+      version: tagName.replaceFirst('v', ''),
+      downloadUrl:
+          downloadUrl ?? 'https://github.com/$_owner/$_repo/releases/latest',
+    );
   }
 
   static bool _isNewer(String latest, String current) {
