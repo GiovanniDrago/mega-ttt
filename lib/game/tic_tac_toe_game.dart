@@ -18,11 +18,13 @@ class TicTacToeGame {
   String? winner;
   bool gameOver = false;
   int? activeSector;
+  int? targetSector;
+  int? focusedRow;
+  int? focusedCol;
 
   bool selectSector(int index) {
     if (gameOver) return false;
     if (index < 0 || index > 8) return false;
-    if (sectorResults[index] != null) return false;
     activeSector = index;
     onStateChanged();
     return true;
@@ -30,6 +32,8 @@ class TicTacToeGame {
 
   void backToOverview() {
     activeSector = null;
+    focusedRow = null;
+    focusedCol = null;
     onStateChanged();
   }
 
@@ -39,6 +43,7 @@ class TicTacToeGame {
     final s = activeSector!;
     if (sectorResults[s] != null) return false;
     if (grids[s][row][col] != null) return false;
+    if (targetSector != null && activeSector != targetSector) return false;
 
     grids[s][row][col] = currentPlayer;
     onStateChanged();
@@ -47,6 +52,10 @@ class TicTacToeGame {
     if (gameOver) return true;
 
     currentPlayer = currentPlayer == 'X' ? 'O' : 'X';
+    targetSector = row * 3 + col;
+    if (sectorResults[targetSector!] != null) {
+      targetSector = null;
+    }
     activeSector = null;
     onStateChanged();
     return true;
@@ -65,7 +74,20 @@ class TicTacToeGame {
       return;
     }
     if (_checkGridDraw(grid)) {
-      sectorResults[s] = 'draw';
+      int xCount = 0, oCount = 0;
+      for (int r = 0; r < 3; r++) {
+        for (int c = 0; c < 3; c++) {
+          if (grid[r][c] == 'X') xCount++;
+          if (grid[r][c] == 'O') oCount++;
+        }
+      }
+      if (xCount > oCount) {
+        sectorResults[s] = 'X';
+      } else if (oCount > xCount) {
+        sectorResults[s] = 'O';
+      } else {
+        sectorResults[s] = 'draw';
+      }
       _checkOverallWin();
     }
   }
@@ -103,6 +125,9 @@ class TicTacToeGame {
     winner = null;
     gameOver = false;
     activeSector = null;
+    targetSector = null;
+    focusedRow = null;
+    focusedCol = null;
     onStateChanged();
   }
 

@@ -198,7 +198,15 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
         title: Text('New Player', style: TextStyle(color: state.theme.text)),
         content: TextField(
           controller: controller,
-          autofocus: true,
+          autofocus: false,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) {
+            final name = controller.text.trim();
+            if (name.isNotEmpty) {
+              state.addPlayer(name);
+              Navigator.pop(ctx);
+            }
+          },
           style: TextStyle(color: state.theme.text),
           decoration: InputDecoration(
             hintText: 'Enter name',
@@ -246,7 +254,15 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
         title: Text('Edit Name', style: TextStyle(color: state.theme.text)),
         content: TextField(
           controller: controller,
-          autofocus: true,
+          autofocus: false,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) {
+            final name = controller.text.trim();
+            if (name.isNotEmpty) {
+              state.updatePlayer(player.id, name);
+              Navigator.pop(ctx);
+            }
+          },
           style: TextStyle(color: state.theme.text),
           decoration: InputDecoration(
             hintText: 'Enter name',

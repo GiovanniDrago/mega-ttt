@@ -91,6 +91,19 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     if (result != null && result != 'draw') {
       _drawWinLine(canvas, grid, result, cellW, cellH);
     }
+
+    final fr = game.focusedRow;
+    final fc = game.focusedCol;
+    if (fr != null && fc != null && result == null && !game.gameOver) {
+      final focusPaint = Paint()
+        ..color = game.theme.accent.withOpacity(0.5)
+        ..strokeWidth = 3
+        ..style = PaintingStyle.stroke;
+      canvas.drawRect(
+        Rect.fromLTWH(fc * cellW + 3, fr * cellH + 3, cellW - 6, cellH - 6),
+        focusPaint,
+      );
+    }
   }
 
   void _drawX(Canvas canvas, Offset center, double radius, Color color) {
@@ -183,6 +196,8 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     final row = (localPosition.y / cellH).floor();
 
     if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+      game.focusedRow = row;
+      game.focusedCol = col;
       game.makeMove(row, col);
       refresh();
     }

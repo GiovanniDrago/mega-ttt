@@ -3,6 +3,7 @@ import '../main.dart';
 import '../models/game_theme.dart';
 import '../services/update_service.dart';
 import 'player_management_screen.dart';
+import 'theme_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final GameTheme theme;
@@ -52,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 12),
             child: Text(
-              'Theme',
+              'Appearance',
               style: TextStyle(
                 color: theme.text.withOpacity(0.6),
                 fontSize: 13,
@@ -61,66 +62,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          for (int i = 0; i < GameTheme.themes.length; i++)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Card(
-                color: theme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: theme == GameTheme.themes[i]
-                      ? BorderSide(color: theme.accent, width: 2)
-                      : BorderSide(color: theme.text.withOpacity(0.08)),
-                ),
-                elevation: theme == GameTheme.themes[i] ? 3 : 0,
-                shadowColor: theme.accent.withOpacity(0.25),
-                child: InkWell(
-                  onTap: () => widget.onThemeChanged(GameTheme.themes[i]),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: GameTheme.themes[i].background,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: GameTheme.themes[i].accent,
-                              width: 2.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          GameTheme.themes[i].name,
-                          style: TextStyle(
-                            color: theme.text,
-                            fontSize: 16,
-                            fontWeight: theme == GameTheme.themes[i]
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
-                        ),
-                        const Spacer(),
-                        if (theme == GameTheme.themes[i])
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: theme.accent,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.check, color: Colors.white, size: 16),
-                          ),
-                      ],
-                    ),
+          Card(
+            color: theme.surface,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 2,
+            shadowColor: theme.accent.withOpacity(0.2),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ThemeSelectionScreen(),
                   ),
+                );
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: theme.accent.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.palette_rounded, color: theme.accent, size: 22),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      'Themes',
+                      style: TextStyle(
+                        color: theme.text,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(Icons.chevron_right_rounded, color: theme.text.withOpacity(0.4), size: 22),
+                  ],
                 ),
               ),
             ),
+          ),
           const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 12),
