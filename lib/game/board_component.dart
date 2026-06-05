@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'tic_tac_toe_game.dart';
 
 class BoardComponent extends PositionComponent with TapCallbacks {
-  final TicTacToeGame gameRef;
+  final TicTacToeGame game;
+  final int sector;
   Color gridColor;
   Color xColor;
   Color oColor;
   Color winLineColor;
 
   BoardComponent({
-    required this.gameRef,
+    required this.game,
+    required this.sector,
     required super.position,
     required super.size,
     required this.gridColor,
@@ -33,9 +35,7 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     this.winLineColor = winLineColor;
   }
 
-  void refresh() {
-    // Trigger redraw
-  }
+  void refresh() {}
 
   @override
   Future<void> onLoad() async {
@@ -46,34 +46,32 @@ class BoardComponent extends PositionComponent with TapCallbacks {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    final paint = Paint()
+    final grid = game.grids[sector];
+    final result = game.sectorResults[sector];
+    final cellW = size.x / 3;
+    final cellH = size.y / 3;
+
+    final linePaint = Paint()
       ..color = gridColor
       ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
 
-    final cellW = size.x / 3;
-    final cellH = size.y / 3;
-
-    // Draw grid lines
     for (int i = 1; i < 3; i++) {
-      // Vertical
       canvas.drawLine(
         Offset(i * cellW, 0),
         Offset(i * cellW, size.y),
-        paint,
+        linePaint,
       );
-      // Horizontal
       canvas.drawLine(
         Offset(0, i * cellH),
         Offset(size.x, i * cellH),
-        paint,
+        linePaint,
       );
     }
 
-    // Draw X and O
     for (int row = 0; row < 3; row++) {
       for (int col = 0; col < 3; col++) {
-        final value = gameRef.grid[row][col];
+        final value = grid[row][col];
         if (value != null) {
           final center = Offset(
             col * cellW + cellW / 2,
@@ -90,9 +88,8 @@ class BoardComponent extends PositionComponent with TapCallbacks {
       }
     }
 
-    // Draw win line
-    if (gameRef.winner != null && gameRef.winner != 'draw') {
-      _drawWinLine(canvas, cellW, cellH);
+    if (result != null && result != 'draw') {
+      _drawWinLine(canvas, grid, result, cellW, cellH);
     }
   }
 
@@ -124,20 +121,23 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     canvas.drawCircle(center, radius, paint);
   }
 
-  void _drawWinLine(Canvas canvas, double cellW, double cellH) {
+  void _drawWinLine(
+    Canvas canvas,
+    List<List<String?>> grid,
+    String winner,
+    double cellW,
+    double cellH,
+  ) {
     final paint = Paint()
       ..color = winLineColor
       ..strokeWidth = 8
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    final winner = gameRef.winner!;
-
-    // Check rows
     for (int i = 0; i < 3; i++) {
-      if (gameRef.grid[i][0] == winner &&
-          gameRef.grid[i][1] == winner &&
-          gameRef.grid[i][2] == winner) {
+      if (grid[i][0] == winner &&
+          grid[i][1] == winner &&
+          grid[i][2] == winner) {
         final start = Offset(0, i * cellH + cellH / 2);
         final end = Offset(size.x, i * cellH + cellH / 2);
         canvas.drawLine(start, end, paint);
@@ -145,11 +145,10 @@ class BoardComponent extends PositionComponent with TapCallbacks {
       }
     }
 
-    // Check columns
     for (int i = 0; i < 3; i++) {
-      if (gameRef.grid[0][i] == winner &&
-          gameRef.grid[1][i] == winner &&
-          gameRef.grid[2][i] == winner) {
+      if (grid[0][i] == winner &&
+          grid[1][i] == winner &&
+          grid[2][i] == winner) {
         final start = Offset(i * cellW + cellW / 2, 0);
         final end = Offset(i * cellW + cellW / 2, size.y);
         canvas.drawLine(start, end, paint);
@@ -157,25 +156,24 @@ class BoardComponent extends PositionComponent with TapCallbacks {
       }
     }
 
-    // Check diagonals
-    if (gameRef.grid[0][0] == winner &&
-        gameRef.grid[1][1] == winner &&
-        gameRef.grid[2][2] == winner) {
+    if (grid[0][0] == winner &&
+        grid[1][1] == winner &&
+        grid[2][2] == winner) {
       canvas.drawLine(Offset(0, 0), Offset(size.x, size.y), paint);
       return;
     }
 
-    if (gameRef.grid[0][2] == winner &&
-        gameRef.grid[1][1] == winner &&
-        gameRef.grid[2][0] == winner) {
+    if (grid[0][2] == winner &&
+        grid[1][1] == winner &&
+        grid[2][0] == winner) {
       canvas.drawLine(Offset(size.x, 0), Offset(0, size.y), paint);
-      return;
     }
   }
 
   @override
   void onTapDown(TapDownEvent event) {
-    if (gameRef.gameOver) return;
+    if (game.gameOver) return;
+    if (game.sectorResults[sector] != null) return;
 
     final localPosition = event.localPosition;
     final cellW = size.x / 3;
@@ -185,7 +183,8 @@ class BoardComponent extends PositionComponent with TapCallbacks {
     final row = (localPosition.y / cellH).floor();
 
     if (row >= 0 && row < 3 && col >= 0 && col < 3) {
-      gameRef.makeMove(row, col);
+      game.makeMove(row, col);
+      refresh();
     }
   }
 }

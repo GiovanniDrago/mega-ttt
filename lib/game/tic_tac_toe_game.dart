@@ -1,129 +1,168 @@
-import 'dart:async';
-import 'package:flame/components.dart';
-import 'package:flame/events.dart';
-import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
-import 'board_component.dart';
+import 'package:flutter/foundation.dart';
 import '../models/game_theme.dart';
 
-class TicTacToeGame extends FlameGame with TapCallbacks {
+class TicTacToeGame {
   final VoidCallback onStateChanged;
   GameTheme theme;
 
   TicTacToeGame({required this.onStateChanged, required this.theme});
 
-  late BoardComponent board;
+  List<List<List<String?>>> grids = List.generate(
+    9,
+    (_) => List.generate(3, (_) => List.generate(3, (_) => null)),
+  );
 
-  List<List<String?>> grid = List.generate(3, (_) => List.generate(3, (_) => null));
+  List<String?> sectorResults = List.filled(9, null);
+
   String currentPlayer = 'X';
   String? winner;
   bool gameOver = false;
+  int? activeSector;
 
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-
-    board = BoardComponent(
-      gameRef: this,
-      position: Vector2.zero(),
-      size: size,
-      gridColor: theme.gridColor,
-      xColor: theme.xColor,
-      oColor: theme.oColor,
-      winLineColor: theme.winLineColor,
-    );
-    add(board);
+  bool selectSector(int index) {
+    if (gameOver) return false;
+    if (index < 0 || index > 8) return false;
+    if (sectorResults[index] != null) return false;
+    activeSector = index;
+    onStateChanged();
+    return true;
   }
 
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    if (isLoaded) {
-      board.size = size;
-      board.position = Vector2.zero();
-      board.refresh();
-    }
+  void backToOverview() {
+    activeSector = null;
+    onStateChanged();
   }
 
   bool makeMove(int row, int col) {
-    if (gameOver || grid[row][col] != null) {
-      return false;
-    }
+    if (gameOver) return false;
+    if (activeSector == null) return false;
+    final s = activeSector!;
+    if (sectorResults[s] != null) return false;
+    if (grids[s][row][col] != null) return false;
 
-    grid[row][col] = currentPlayer;
-    board.refresh();
+    grids[s][row][col] = currentPlayer;
     onStateChanged();
 
-    if (_checkWinner(currentPlayer)) {
-      winner = currentPlayer;
-      gameOver = true;
-      onStateChanged();
-      return true;
-    }
-
-    if (_checkDraw()) {
-      winner = 'draw';
-      gameOver = true;
-      onStateChanged();
-      return true;
-    }
+    _checkSectorResult(s);
+    if (gameOver) return true;
 
     currentPlayer = currentPlayer == 'X' ? 'O' : 'X';
+    activeSector = null;
     onStateChanged();
     return true;
   }
 
-  bool _checkWinner(String player) {
-    // Rows
-    for (int i = 0; i < 3; i++) {
-      if (grid[i][0] == player && grid[i][1] == player && grid[i][2] == player) {
-        return true;
-      }
+  void _checkSectorResult(int s) {
+    final grid = grids[s];
+    if (_checkGridWinner(grid, 'X')) {
+      sectorResults[s] = 'X';
+      _checkOverallWin();
+      return;
     }
-    // Columns
-    for (int i = 0; i < 3; i++) {
-      if (grid[0][i] == player && grid[1][i] == player && grid[2][i] == player) {
-        return true;
-      }
+    if (_checkGridWinner(grid, 'O')) {
+      sectorResults[s] = 'O';
+      _checkOverallWin();
+      return;
     }
-    // Diagonals
-    if (grid[0][0] == player && grid[1][1] == player && grid[2][2] == player) {
-      return true;
+    if (_checkGridDraw(grid)) {
+      sectorResults[s] = 'draw';
+      _checkOverallWin();
     }
-    if (grid[0][2] == player && grid[1][1] == player && grid[2][0] == player) {
-      return true;
-    }
-    return false;
   }
 
-  bool _checkDraw() {
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (grid[i][j] == null) {
-          return false;
-        }
-      }
+  void _checkOverallWin() {
+    final results = sectorResults
+        .map((r) => r == 'X' || r == 'O' ? r : null)
+        .toList();
+
+    if (_checkLineWinner(results, 'X')) {
+      winner = 'X';
+      gameOver = true;
+      return;
     }
-    return true;
+    if (_checkLineWinner(results, 'O')) {
+      winner = 'O';
+      gameOver = true;
+      return;
+    }
+
+    final allDecided = sectorResults.every((r) => r != null);
+    if (allDecided) {
+      winner = 'draw';
+      gameOver = true;
+    }
   }
 
   void reset() {
-    grid = List.generate(3, (_) => List.generate(3, (_) => null));
+    grids = List.generate(
+      9,
+      (_) => List.generate(3, (_) => List.generate(3, (_) => null)),
+    );
+    sectorResults = List.filled(9, null);
     currentPlayer = 'X';
     winner = null;
     gameOver = false;
-    board.refresh();
+    activeSector = null;
     onStateChanged();
   }
 
   void updateTheme(GameTheme newTheme) {
     theme = newTheme;
-    board.updateColors(
-      gridColor: newTheme.gridColor,
-      xColor: newTheme.xColor,
-      oColor: newTheme.oColor,
-      winLineColor: newTheme.winLineColor,
-    );
-    board.refresh();
+    onStateChanged();
+  }
+
+  static bool _checkGridWinner(List<List<String?>> grid, String player) {
+    final lines = _gridLines(grid);
+    for (final line in lines) {
+      if (line[0] == player && line[1] == player && line[2] == player) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static bool _checkGridDraw(List<List<String?>> grid) {
+    for (int r = 0; r < 3; r++) {
+      for (int c = 0; c < 3; c++) {
+        if (grid[r][c] == null) return false;
+      }
+    }
+    return true;
+  }
+
+  static bool _checkLineWinner(List<String?> cells, String player) {
+    final lines = _gridLines3(cells);
+    for (final line in lines) {
+      if (line[0] == player && line[1] == player && line[2] == player) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static List<List<String?>> _gridLines(List<List<String?>> grid) {
+    return [
+      [grid[0][0], grid[0][1], grid[0][2]],
+      [grid[1][0], grid[1][1], grid[1][2]],
+      [grid[2][0], grid[2][1], grid[2][2]],
+      [grid[0][0], grid[1][0], grid[2][0]],
+      [grid[0][1], grid[1][1], grid[2][1]],
+      [grid[0][2], grid[1][2], grid[2][2]],
+      [grid[0][0], grid[1][1], grid[2][2]],
+      [grid[0][2], grid[1][1], grid[2][0]],
+    ];
+  }
+
+  static List<List<String?>> _gridLines3(List<String?> cells) {
+    return [
+      [cells[0], cells[1], cells[2]],
+      [cells[3], cells[4], cells[5]],
+      [cells[6], cells[7], cells[8]],
+      [cells[0], cells[3], cells[6]],
+      [cells[1], cells[4], cells[7]],
+      [cells[2], cells[5], cells[8]],
+      [cells[0], cells[4], cells[8]],
+      [cells[2], cells[4], cells[6]],
+    ];
   }
 }
