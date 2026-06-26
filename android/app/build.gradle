@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.mega_ttt"
+    namespace = "com.takasu.mega_ttt"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -49,7 +49,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.mega_ttt"
+        applicationId = "com.takasu.mega_ttt"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
@@ -70,6 +70,25 @@ android {
             signingConfig = signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+}
+
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+
+def abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86_64': 3]
+
+android.applicationVariants.configureEach { variant ->
+    variant.outputs.each { output ->
+        def abiFilter = output.filters.find { it.filterType == "ABI" }
+        def abiVersionCode = abiCodes[abiFilter?.identifier]
+        if (abiVersionCode != null) {
+            ((ApkVariantOutputImpl) output).versionCodeOverride = variant.versionCode * 10 + abiVersionCode
         }
     }
 }

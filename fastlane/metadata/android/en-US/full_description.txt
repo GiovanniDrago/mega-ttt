@@ -1,0 +1,8 @@
+Mega TTT is a full-screen tic-tac-toe game built with Flutter and the Flame game engine. Play against friends on the same device with a clean, modern interface.
+
+Features:
+- Classic tic-tac-toe gameplay
+- Full-screen immersive experience
+- Multiple game themes
+- Player management
+- Leaderboard tracking

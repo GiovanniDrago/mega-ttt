@@ -26,18 +26,35 @@ flutter run
 
 ## GitHub Release Build
 
-To create a signed release APK:
+To create a signed release with ABI-split APKs and an AAB:
 
-1. Ensure the following GitHub secrets are configured:
-   - `KEYSTORE_BASE64`
-   - `KEYSTORE_PASSWORD`
-   - `KEY_PASSWORD`
-   - `KEY_ALIAS`
+### 1. Configure GitHub Secrets
 
-2. Run the release helper script:
+| Secret | Description |
+|--------|-------------|
+| `KEYSTORE_BASE64` | Base64-encoded release keystore file |
+| `KEYSTORE_PASSWORD` | Keystore password |
+| `KEY_PASSWORD` | Key password |
+| `KEY_ALIAS` | Key alias |
+
+### 2. Run the release helper script
 
 ```bash
 ./scripts/tag-release.sh v1.0.0
 ```
 
-This bumps the version, commits, pushes, creates a tag, and triggers GitHub Actions to build and publish the signed APK.
+This bumps the version in `pubspec.yaml` to `1.0.0+10000`, commits, pushes, creates an annotated tag, and triggers GitHub Actions.
+
+### 3. Release artifacts
+
+The workflow produces:
+- `app-armeabi-v7a-release.apk`
+- `app-arm64-v8a-release.apk`
+- `app-x86_64-release.apk`
+- `app-release.aab`
+
+All artifacts are attached to the GitHub Release for the tag.
+
+## License
+
+GPL-3.0-only
