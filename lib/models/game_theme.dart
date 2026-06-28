@@ -136,7 +136,7 @@ class GameTheme {
       text: Color(0x8A000000),
       xColor: Color(0xFF1565C0),
       oColor: Color(0xFFC62828),
-      gridColor: Color(0x4D000000),
+      gridColor: Color(0xFFBDBDBD),
       winLineColor: Color(0xFF2E7D32),
       accent: Colors.blue,
       buttonBg: Colors.blue,

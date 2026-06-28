@@ -9,8 +9,16 @@ import 'tic_tac_toe_game.dart';
 class MiniBoardGame extends FlameGame with TapCallbacks {
   final TicTacToeGame game;
   final int sector;
+  final Color _backgroundColor;
 
-  MiniBoardGame({required this.game, required this.sector});
+  MiniBoardGame({
+    required this.game,
+    required this.sector,
+    required Color backgroundColor,
+  }) : _backgroundColor = backgroundColor;
+
+  @override
+  Color backgroundColor() => _backgroundColor;
 
   late BoardComponent board;
 

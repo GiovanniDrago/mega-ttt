@@ -450,7 +450,11 @@ class _GameScreenState extends State<GameScreen> {
       statusTextColor = theme.text;
     }
 
-    final miniGame = MiniBoardGame(game: _game, sector: sector);
+    final miniGame = MiniBoardGame(
+      game: _game,
+      sector: sector,
+      backgroundColor: theme.surface,
+    );
 
     return PopScope(
       canPop: false,
