@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 import '../services/update_service.dart';
@@ -31,6 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = MyApp.of(context)?.theme ?? widget.theme;
 
     return Scaffold(
@@ -187,7 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Version',
+                        l10n.version,
                         style: TextStyle(
                           color: theme.text.withOpacity(0.6),
                           fontSize: 13,
@@ -215,7 +217,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ElevatedButton.icon(
               onPressed: () => UpdateService.check(context, silent: false),
               icon: const Icon(Icons.system_update_rounded, size: 20),
-              label: const Text('Check for updates'),
+              label: Text(l10n.checkForUpdates),
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.buttonBg,
                 foregroundColor: Colors.white,

@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'l10n/app_localizations.dart';
 import 'models/game_theme.dart';
 import 'models/player.dart';
 import 'services/theme_service.dart';
 import 'services/player_service.dart';
+import 'services/update_service.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -120,13 +122,38 @@ class _MyAppState extends State<MyApp> {
       title: 'Mega TTT',
       debugShowCheckedModeBanner: false,
       theme: _theme.toThemeData(),
-      home: HomeScreen(
-        theme: _theme,
-        onThemeChanged: setTheme,
-        players: _players,
-        activePlayerIds: _activePlayerIds,
-        onPlayersChanged: refreshPlayers,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: _AppStartupWrapper(
+        child: HomeScreen(
+          theme: _theme,
+          onThemeChanged: setTheme,
+          players: _players,
+          activePlayerIds: _activePlayerIds,
+          onPlayersChanged: refreshPlayers,
+        ),
       ),
     );
   }
+}
+
+class _AppStartupWrapper extends StatefulWidget {
+  final Widget child;
+  const _AppStartupWrapper({required this.child});
+
+  @override
+  State<_AppStartupWrapper> createState() => _AppStartupWrapperState();
+}
+
+class _AppStartupWrapperState extends State<_AppStartupWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateService.check(context, silent: true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

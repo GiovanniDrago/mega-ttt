@@ -1,0 +1,9 @@
+{
+  "checkForUpdates": "Check for updates",
+  "updateAvailable": "Update available",
+  "noUpdates": "No updates available",
+  "updateError": "Could not check for updates",
+  "download": "Download",
+  "later": "Later",
+  "version": "Version"
+}

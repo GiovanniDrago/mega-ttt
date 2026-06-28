@@ -6,18 +6,20 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../config.dart';
+import '../l10n/app_localizations.dart';
+
 class UpdateService {
-  static const String _owner = 'GiovanniDrago';
-  static const String _repo = 'mega-ttt';
+  static const String _owner = AppConfig.githubOwner;
+  static const String _repo = AppConfig.githubRepo;
   static const String _lastCheckKey = 'last_update_check';
 
   static String? _cachedVersion;
-  static PackageInfo? _packageInfo;
 
   static Future<String> _getCurrentVersion() async {
     if (_cachedVersion != null) return _cachedVersion!;
-    _packageInfo ??= await PackageInfo.fromPlatform();
-    _cachedVersion = _packageInfo!.version;
+    final packageInfo = await PackageInfo.fromPlatform();
+    _cachedVersion = packageInfo.version;
     return _cachedVersion!;
   }
 
@@ -30,15 +32,7 @@ class UpdateService {
 
     if (silent && lastCheck == today) return;
 
-    String? errorMessage;
-    _ReleaseInfo? latest;
-    try {
-      latest = await _fetchLatestRelease();
-    } catch (e) {
-      errorMessage = e.toString();
-      debugPrint('Update check exception: $errorMessage');
-    }
-
+    final latest = await _fetchLatestRelease();
     final currentVersion = await _getCurrentVersion();
 
     if (!silent) {
@@ -49,7 +43,7 @@ class UpdateService {
 
     if (latest == null) {
       if (!silent && context.mounted) {
-        _showSnack(context, errorMessage ?? 'Could not check for updates');
+        _showSnack(context, AppLocalizations.of(context)!.updateError);
       }
       return;
     }
@@ -59,44 +53,49 @@ class UpdateService {
         _showUpdateDialog(context, latest);
       }
     } else if (!silent && context.mounted) {
-      _showSnack(context, 'No updates available');
+      _showSnack(context, AppLocalizations.of(context)!.noUpdates);
     }
   }
 
-  static Future<_ReleaseInfo> _fetchLatestRelease() async {
-    final currentVersion = await _getCurrentVersion();
-    final uri = Uri.parse(
-      'https://api.github.com/repos/$_owner/$_repo/releases/latest',
-    );
-    final response = await http.get(
-      uri,
-      headers: {
-        'Accept': 'application/vnd.github+json',
-        'User-Agent': 'mega_ttt/$currentVersion',
-      },
-    );
-    if (response.statusCode != 200) {
-      throw Exception('Server returned ${response.statusCode}');
+  static Future<_ReleaseInfo?> _fetchLatestRelease() async {
+    try {
+      final currentVersion = await _getCurrentVersion();
+      final uri = Uri.parse(
+        'https://api.github.com/repos/$_owner/$_repo/releases/latest',
+      );
+      final response = await http.get(
+        uri,
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'User-Agent': '$_repo/$currentVersion',
+        },
+      );
+      if (response.statusCode != 200) {
+        debugPrint('GitHub API error: ${response.statusCode} ${response.body}');
+        return null;
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final tagName = data['tag_name'] as String?;
+      final assets = data['assets'] as List<dynamic>?;
+
+      if (tagName == null) return null;
+
+      String? downloadUrl;
+      if (assets != null && assets.isNotEmpty) {
+        downloadUrl = assets.first['browser_download_url'] as String?;
+      }
+
+      return _ReleaseInfo(
+        version: tagName.replaceFirst('v', ''),
+        downloadUrl:
+            downloadUrl ?? 'https://github.com/$_owner/$_repo/releases/latest',
+      );
+    } catch (e, stack) {
+      debugPrint('Update check error: $e');
+      debugPrint('$stack');
+      return null;
     }
-
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-    final tagName = data['tag_name'] as String?;
-    final assets = data['assets'] as List<dynamic>?;
-
-    if (tagName == null) {
-      throw Exception('No release found');
-    }
-
-    String? downloadUrl;
-    if (assets != null && assets.isNotEmpty) {
-      downloadUrl = assets.first['browser_download_url'] as String?;
-    }
-
-    return _ReleaseInfo(
-      version: tagName.replaceFirst('v', ''),
-      downloadUrl:
-          downloadUrl ?? 'https://github.com/$_owner/$_repo/releases/latest',
-    );
   }
 
   static bool _isNewer(String latest, String current) {
@@ -113,24 +112,32 @@ class UpdateService {
   }
 
   static void _showUpdateDialog(BuildContext context, _ReleaseInfo release) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Update available v${release.version}'),
+        title: Text('${l10n.updateAvailable} v${release.version}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Later'),
+            child: Text(l10n.later),
           ),
           FilledButton(
             onPressed: () async {
               final uri = Uri.parse(release.downloadUrl);
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
+              } else {
+                if (context.mounted) {
+                  _showSnack(
+                    context,
+                    AppLocalizations.of(context)!.updateError,
+                  );
+                }
               }
               if (context.mounted) Navigator.pop(context);
             },
-            child: const Text('Download'),
+            child: Text(l10n.download),
           ),
         ],
       ),
