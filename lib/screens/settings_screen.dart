@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../app_distribution.dart';
 import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 import '../services/update_service.dart';
+import 'interactions/about_dialog.dart';
 import 'player_management_screen.dart';
 import 'theme_selection_screen.dart';
 
@@ -226,6 +228,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Card(
+            color: theme.surface,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 2,
+            shadowColor: theme.accent.withOpacity(0.2),
+            child: InkWell(
+              onTap: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (context) => AboutDialogContent(
+                    distribution: AppDistributionConfig.fromEnvironment(),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: theme.accent.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.info_outline_rounded, color: theme.accent, size: 22),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      l10n.aboutMenuItem,
+                      style: TextStyle(
+                        color: theme.text,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(Icons.chevron_right_rounded, color: theme.text.withOpacity(0.4), size: 22),
+                  ],
+                ),
               ),
             ),
           ),

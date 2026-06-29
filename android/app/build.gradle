@@ -48,6 +48,18 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    flavorDimensions "distribution"
+
+    productFlavors {
+        direct {
+            dimension "distribution"
+            applicationIdSuffix ".direct"
+        }
+        play {
+            dimension "distribution"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.takasu.mega_ttt"
         minSdk = flutter.minSdkVersion

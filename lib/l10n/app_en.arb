@@ -5,5 +5,14 @@
   "updateError": "Could not check for updates",
   "download": "Download",
   "later": "Later",
-  "version": "Version"
+  "version": "Version",
+  "closeButton": "Close",
+  "aboutMenuItem": "About",
+  "aboutDialogTitle": "About",
+  "aboutDialogGreeting": "Hi.",
+  "aboutDirectMessage": "I hope you're enjoying the app. If it made you smile and you want to support it, you can leave a small tip.",
+  "aboutPlayMessage": "I hope you're enjoying the app. If you want to know more about the project, check the repository page.",
+  "aboutDonationButton": "Buy me a coffee",
+  "aboutGithubButton": "Open GitHub repo",
+  "externalLinkError": "Couldn't open the link."
 }

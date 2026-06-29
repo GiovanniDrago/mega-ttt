@@ -5,5 +5,14 @@
   "updateError": "Impossibile controllare gli aggiornamenti",
   "download": "Scarica",
   "later": "Più tardi",
-  "version": "Versione"
+  "version": "Versione",
+  "closeButton": "Chiudi",
+  "aboutMenuItem": "Info",
+  "aboutDialogTitle": "Info",
+  "aboutDialogGreeting": "Ciao.",
+  "aboutDirectMessage": "Spero che l'app ti stia piacendo. Se ti ha strappato un sorriso e vuoi supportarla, puoi lasciare una piccola mancia.",
+  "aboutPlayMessage": "Spero che l'app ti stia piacendo. Se vuoi sapere qualcosa in piu sul progetto, dai un'occhiata alla pagina del repository.",
+  "aboutDonationButton": "Offrimi un caffe",
+  "aboutGithubButton": "Apri il repo GitHub",
+  "externalLinkError": "Non sono riuscito ad aprire il link."
 }
