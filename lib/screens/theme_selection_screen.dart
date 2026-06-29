@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 
@@ -7,6 +8,7 @@ class ThemeSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = MyApp.of(context);
     final theme = state?.theme ?? GameTheme.themes[0];
 
@@ -20,7 +22,7 @@ class ThemeSelectionScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Themes',
+          l10n.themes,
           style: TextStyle(color: theme.text, fontWeight: FontWeight.w600),
         ),
       ),
@@ -61,7 +63,7 @@ class ThemeSelectionScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 16),
                         Text(
-                          GameTheme.themes[i].name,
+                          GameTheme.themes[i].localizedName(l10n),
                           style: TextStyle(
                             color: theme.text,
                             fontSize: 16,

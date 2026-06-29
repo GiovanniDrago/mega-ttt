@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 import '../models/player.dart';
@@ -26,6 +27,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: theme.background,
       body: SafeArea(
@@ -47,26 +50,26 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 48),
                 _MenuItem(
                   icon: Icons.play_arrow_rounded,
-                  label: 'New Game',
+                  label: l10n.newGame,
                   theme: theme,
-                  onTap: () => _startNewGame(context),
+                  onTap: () => _startNewGame(context, l10n),
                 ),
                 const SizedBox(height: 16),
                 _MenuItem(
                   icon: Icons.emoji_events_rounded,
-                  label: 'Leaderboard',
+                  label: l10n.leaderboard,
                   theme: theme,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => LeaderboardScreen()),
+                      MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
                     );
                   },
                 ),
                 const SizedBox(height: 16),
                 _MenuItem(
                   icon: Icons.settings_rounded,
-                  label: 'Settings',
+                  label: l10n.settings,
                   theme: theme,
                   onTap: () {
                     Navigator.push(
@@ -88,7 +91,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _startNewGame(BuildContext context) async {
+  void _startNewGame(BuildContext context, AppLocalizations l10n) async {
     final state = MyApp.of(context);
     if (state == null) return;
 
@@ -96,7 +99,7 @@ class HomeScreen extends StatelessWidget {
     if (active.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Set 2 active players in Settings before starting a game.'),
+          content: Text(l10n.needTwoActivePlayers),
           backgroundColor: theme.accent,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

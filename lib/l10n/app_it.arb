@@ -14,5 +14,94 @@
   "aboutPlayMessage": "Spero che l'app ti stia piacendo. Se vuoi sapere qualcosa in piu sul progetto, dai un'occhiata alla pagina del repository.",
   "aboutDonationButton": "Offrimi un caffe",
   "aboutGithubButton": "Apri il repo GitHub",
-  "externalLinkError": "Non sono riuscito ad aprire il link."
+  "externalLinkError": "Non sono riuscito ad aprire il link.",
+  "newGame": "Nuova partita",
+  "leaderboard": "Classifica",
+  "settings": "Impostazioni",
+  "appearance": "Aspetto",
+  "themes": "Temi",
+  "players": "Giocatori",
+  "managePlayers": "Gestisci giocatori",
+  "loading": "Caricamento...",
+  "versionFormat": "v{version}",
+  "@versionFormat": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "needTwoActivePlayers": "Imposta 2 giocatori attivi nelle Impostazioni prima di iniziare.",
+  "gameDraw": "Pareggio!",
+  "gameWin": "{name} ({symbol}) vince!",
+  "@gameWin": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusViewing": "{name} ({symbol}) — osservazione",
+  "@statusViewing": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusPlaceMark": "{name} ({symbol}) — piazza il segno",
+  "@statusPlaceMark": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusPlayHighlighted": "{name} ({symbol}) — gioca nel settore evidenziato",
+  "@statusPlayHighlighted": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusChooseSector": "{name} ({symbol}) — scegli un settore",
+  "@statusChooseSector": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "resetGame": "Ripristina partita",
+  "sectorTitle": "Settore {n}",
+  "@sectorTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "noPlayersYet": "Nessun giocatore",
+  "wins": "Vittorie",
+  "losses": "Sconfitte",
+  "draws": "Pareggi",
+  "resetLeaderboard": "Azzera classifica",
+  "addPlayer": "Aggiungi giocatore",
+  "resetLeaderboardConfirm": "Azzererà vittorie, sconfitte e pareggi di tutti. Continuare?",
+  "cancel": "Annulla",
+  "reset": "Azzera",
+  "newPlayer": "Nuovo giocatore",
+  "enterName": "Inserisci nome",
+  "create": "Crea",
+  "editName": "Modifica nome",
+  "save": "Salva",
+  "deletePlayer": "Elimina giocatore",
+  "deletePlayerConfirm": "Eliminare \"{name}\"?",
+  "@deletePlayerConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "delete": "Elimina",
+  "themeDarkNavy": "Blu notte",
+  "themeMidnightPurple": "Viola notte",
+  "themeForest": "Foresta",
+  "themeOcean": "Oceano",
+  "themeSunset": "Tramonto",
+  "themeLightClassic": "Chiaro classico",
+  "language": "Lingua",
+  "languageEnglish": "Inglese",
+  "languageItalian": "Italiano"
 }

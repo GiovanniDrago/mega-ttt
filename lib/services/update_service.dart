@@ -116,7 +116,7 @@ class UpdateService {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('${l10n.updateAvailable} v${release.version}'),
+        title: Text('${l10n.updateAvailable} ${l10n.versionFormat(release.version)}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

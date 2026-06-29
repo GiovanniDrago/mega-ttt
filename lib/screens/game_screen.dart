@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flame/game.dart';
 import '../game/tic_tac_toe_game.dart';
 import '../game/mini_board_game.dart';
+import '../l10n/app_localizations.dart';
 import '../models/game_theme.dart';
 
 class GameScreen extends StatefulWidget {
@@ -84,24 +85,24 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {});
   }
 
-  String _statusMessage() {
+  String _statusMessage(AppLocalizations l10n) {
     if (_game.winner == 'draw') {
-      return "It's a draw!";
+      return l10n.gameDraw;
     } else if (_game.winner != null) {
       final name = _game.winner == 'X' ? widget.playerXName : widget.playerOName;
-      return "$name (${_game.winner}) wins!";
+      return l10n.gameWin(name, _game.winner!);
     } else if (_game.activeSector != null) {
       final name = _game.currentPlayer == 'X' ? widget.playerXName : widget.playerOName;
       if (_game.targetSector != null && _game.activeSector != _game.targetSector) {
-        return "$name (${_game.currentPlayer}) \u2014 viewing";
+        return l10n.statusViewing(name, _game.currentPlayer);
       }
-      return "$name (${_game.currentPlayer}) \u2014 place your mark";
+      return l10n.statusPlaceMark(name, _game.currentPlayer);
     } else {
       final name = _game.currentPlayer == 'X' ? widget.playerXName : widget.playerOName;
       if (_game.targetSector != null) {
-        return "$name (${_game.currentPlayer}) \u2014 play in highlighted sector";
+        return l10n.statusPlayHighlighted(name, _game.currentPlayer);
       }
-      return "$name (${_game.currentPlayer}) \u2014 choose a sector";
+      return l10n.statusChooseSector(name, _game.currentPlayer);
     }
   }
 
@@ -184,16 +185,17 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = widget.theme;
     final activeSector = _game.activeSector;
 
     if (activeSector != null) {
-      return _buildZoomedView(theme, activeSector);
+      return _buildZoomedView(theme, activeSector, l10n);
     }
-    return _buildOverview(theme);
+    return _buildOverview(theme, l10n);
   }
 
-  Widget _buildOverview(GameTheme theme) {
+  Widget _buildOverview(GameTheme theme, AppLocalizations l10n) {
     final hasWinner = _game.winner != null && _game.winner != 'draw';
     final isDraw = _game.winner == 'draw';
     final isX = _game.winner == 'X';
@@ -255,7 +257,7 @@ class _GameScreenState extends State<GameScreen> {
                     border: Border.all(color: statusBorder, width: 2),
                   ),
                   child: Text(
-                    _statusMessage(),
+                    _statusMessage(l10n),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -290,7 +292,7 @@ class _GameScreenState extends State<GameScreen> {
                   onPressed: _resetGame,
                   icon: Icon(Icons.refresh, size: 24, color: Colors.white),
                   label: Text(
-                    'Reset Game',
+                    l10n.resetGame,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -425,7 +427,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildZoomedView(GameTheme theme, int sector) {
+  Widget _buildZoomedView(GameTheme theme, int sector, AppLocalizations l10n) {
     final sectorResult = _game.sectorResults[sector];
 
     final hasWinner = _game.winner != null && _game.winner != 'draw';
@@ -478,7 +480,7 @@ class _GameScreenState extends State<GameScreen> {
             onPressed: () => _game.backToOverview(),
           ),
           title: Text(
-            'Sector ${sector + 1}',
+            l10n.sectorTitle(sector + 1),
             style: TextStyle(color: theme.text, fontWeight: FontWeight.w600),
           ),
         ),
@@ -496,7 +498,7 @@ class _GameScreenState extends State<GameScreen> {
                     border: Border.all(color: statusBorder, width: 2),
                   ),
                   child: Text(
-                    _statusMessage(),
+                    _statusMessage(l10n),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -529,7 +531,7 @@ class _GameScreenState extends State<GameScreen> {
                   onPressed: _resetGame,
                   icon: Icon(Icons.refresh, size: 24, color: Colors.white),
                   label: Text(
-                    'Reset Game',
+                    l10n.resetGame,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(

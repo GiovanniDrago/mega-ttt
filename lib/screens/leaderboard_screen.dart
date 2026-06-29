@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 
@@ -7,6 +8,7 @@ class LeaderboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = MyApp.of(context);
     final theme = state?.theme ?? GameTheme.themes[0];
     final players = state?.players ?? [];
@@ -21,14 +23,14 @@ class LeaderboardScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Leaderboard',
+          l10n.leaderboard,
           style: TextStyle(color: theme.text, fontWeight: FontWeight.w600),
         ),
       ),
       body: players.isEmpty
           ? Center(
               child: Text(
-                'No players yet',
+                l10n.noPlayersYet,
                 style: TextStyle(color: theme.text.withOpacity(0.5), fontSize: 16),
               ),
             )
@@ -79,21 +81,21 @@ class LeaderboardScreen extends StatelessWidget {
                             Row(
                               children: [
                                 _StatChip(
-                                  label: 'Wins',
+                                  label: l10n.wins,
                                   value: player.wins,
                                   color: const Color(0xFF4CAF50),
                                   theme: theme,
                                 ),
                                 const SizedBox(width: 12),
                                 _StatChip(
-                                  label: 'Losses',
+                                  label: l10n.losses,
                                   value: player.losses,
                                   color: const Color(0xFFEF5350),
                                   theme: theme,
                                 ),
                                 const SizedBox(width: 12),
                                 _StatChip(
-                                  label: 'Draws',
+                                  label: l10n.draws,
                                   value: player.draws,
                                   color: const Color(0xFFFFA726),
                                   theme: theme,

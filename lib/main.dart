@@ -5,6 +5,7 @@ import 'models/game_theme.dart';
 import 'models/player.dart';
 import 'services/theme_service.dart';
 import 'services/player_service.dart';
+import 'services/locale_service.dart';
 import 'services/update_service.dart';
 import 'screens/home_screen.dart';
 
@@ -27,10 +28,12 @@ class _MyAppState extends State<MyApp> {
   GameTheme _theme = GameTheme.themes[0];
   List<Player> _players = [];
   List<String> _activePlayerIds = [];
+  Locale _locale = const Locale('en');
 
   GameTheme get theme => _theme;
   List<Player> get players => _players;
   List<String> get activePlayerIds => _activePlayerIds;
+  Locale get locale => _locale;
 
   List<Player> get activePlayers {
     return _players.where((p) => _activePlayerIds.contains(p.id)).toList();
@@ -44,11 +47,13 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _loadAll() async {
     final theme = await ThemeService.load();
+    final locale = await LocaleService.load();
     final players = await PlayerService.loadAll();
     final activeIds = await PlayerService.getActivePlayerIds();
     if (mounted) {
       setState(() {
         _theme = theme;
+        _locale = locale;
         _players = players;
         _activePlayerIds = activeIds;
       });
@@ -58,6 +63,11 @@ class _MyAppState extends State<MyApp> {
   void setTheme(GameTheme theme) {
     setState(() => _theme = theme);
     ThemeService.save(theme);
+  }
+
+  void setLocale(Locale locale) {
+    setState(() => _locale = locale);
+    LocaleService.save(locale);
   }
 
   Future<void> addPlayer(String name) async {
@@ -122,6 +132,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Mega TTT',
       debugShowCheckedModeBanner: false,
       theme: _theme.toThemeData(),
+      locale: _locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: _AppStartupWrapper(

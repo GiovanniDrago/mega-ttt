@@ -32,6 +32,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (mounted) setState(() => _version = version);
   }
 
+  String _currentLanguageName(AppLocalizations l10n) {
+    final locale = MyApp.of(context)?.locale;
+    if (locale?.languageCode == 'it') return l10n.languageItalian;
+    return l10n.languageEnglish;
+  }
+
+  void _showLanguagePicker(BuildContext context) {
+    final state = MyApp.of(context);
+    if (state == null) return;
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: state.theme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(l10n.language, style: TextStyle(color: state.theme.text)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(l10n.languageEnglish, style: TextStyle(color: state.theme.text)),
+              leading: Icon(
+                state.locale.languageCode == 'en' ? Icons.radio_button_checked : Icons.radio_button_off,
+                color: state.theme.accent,
+              ),
+              onTap: () {
+                state.setLocale(const Locale('en'));
+                Navigator.pop(ctx);
+              },
+            ),
+            ListTile(
+              title: Text(l10n.languageItalian, style: TextStyle(color: state.theme.text)),
+              leading: Icon(
+                state.locale.languageCode == 'it' ? Icons.radio_button_checked : Icons.radio_button_off,
+                color: state.theme.accent,
+              ),
+              onTap: () {
+                state.setLocale(const Locale('it'));
+                Navigator.pop(ctx);
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.closeButton, style: TextStyle(color: state.theme.text.withOpacity(0.6))),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -47,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Settings',
+          l10n.settings,
           style: TextStyle(color: theme.text, fontWeight: FontWeight.w600),
         ),
       ),
@@ -57,7 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 12),
             child: Text(
-              'Appearance',
+              l10n.appearance,
               style: TextStyle(
                 color: theme.text.withOpacity(0.6),
                 fontSize: 13,
@@ -96,7 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      'Themes',
+                      l10n.themes,
                       style: TextStyle(
                         color: theme.text,
                         fontSize: 16,
@@ -114,7 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 12),
             child: Text(
-              'Players',
+              l10n.players,
               style: TextStyle(
                 color: theme.text.withOpacity(0.6),
                 fontSize: 13,
@@ -153,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      'Manage Players',
+                      l10n.managePlayers,
                       style: TextStyle(
                         color: theme.text,
                         fontSize: 16,
@@ -161,6 +215,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     const Spacer(),
+                    Icon(Icons.chevron_right_rounded, color: theme.text.withOpacity(0.4), size: 22),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 12),
+            child: Text(
+              l10n.language,
+              style: TextStyle(
+                color: theme.text.withOpacity(0.6),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          Card(
+            color: theme.surface,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 2,
+            shadowColor: theme.accent.withOpacity(0.2),
+            child: InkWell(
+              onTap: () => _showLanguagePicker(context),
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: theme.accent.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.language_rounded, color: theme.accent, size: 22),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      l10n.language,
+                      style: TextStyle(
+                        color: theme.text,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      _currentLanguageName(l10n),
+                      style: TextStyle(
+                        color: theme.text.withOpacity(0.5),
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
                     Icon(Icons.chevron_right_rounded, color: theme.text.withOpacity(0.4), size: 22),
                   ],
                 ),
@@ -200,7 +312,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _version.isNotEmpty ? 'v$_version' : 'Loading...',
+                        _version.isNotEmpty ? l10n.versionFormat(_version) : l10n.loading,
                         style: TextStyle(
                           color: theme.text,
                           fontSize: 16,

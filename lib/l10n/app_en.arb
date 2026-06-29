@@ -14,5 +14,94 @@
   "aboutPlayMessage": "I hope you're enjoying the app. If you want to know more about the project, check the repository page.",
   "aboutDonationButton": "Buy me a coffee",
   "aboutGithubButton": "Open GitHub repo",
-  "externalLinkError": "Couldn't open the link."
+  "externalLinkError": "Couldn't open the link.",
+  "newGame": "New Game",
+  "leaderboard": "Leaderboard",
+  "settings": "Settings",
+  "appearance": "Appearance",
+  "themes": "Themes",
+  "players": "Players",
+  "managePlayers": "Manage Players",
+  "loading": "Loading...",
+  "versionFormat": "v{version}",
+  "@versionFormat": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "needTwoActivePlayers": "Set 2 active players in Settings before starting a game.",
+  "gameDraw": "It's a draw!",
+  "gameWin": "{name} ({symbol}) wins!",
+  "@gameWin": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusViewing": "{name} ({symbol}) — viewing",
+  "@statusViewing": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusPlaceMark": "{name} ({symbol}) — place your mark",
+  "@statusPlaceMark": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusPlayHighlighted": "{name} ({symbol}) — play in highlighted sector",
+  "@statusPlayHighlighted": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "statusChooseSector": "{name} ({symbol}) — choose a sector",
+  "@statusChooseSector": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "symbol": { "type": "String" }
+    }
+  },
+  "resetGame": "Reset Game",
+  "sectorTitle": "Sector {n}",
+  "@sectorTitle": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "noPlayersYet": "No players yet",
+  "wins": "Wins",
+  "losses": "Losses",
+  "draws": "Draws",
+  "resetLeaderboard": "Reset Leaderboard",
+  "addPlayer": "Add Player",
+  "resetLeaderboardConfirm": "This will reset all wins, losses and draws for every player. Continue?",
+  "cancel": "Cancel",
+  "reset": "Reset",
+  "newPlayer": "New Player",
+  "enterName": "Enter name",
+  "create": "Create",
+  "editName": "Edit Name",
+  "save": "Save",
+  "deletePlayer": "Delete Player",
+  "deletePlayerConfirm": "Are you sure you want to delete \"{name}\"?",
+  "@deletePlayerConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "delete": "Delete",
+  "themeDarkNavy": "Dark Navy",
+  "themeMidnightPurple": "Midnight Purple",
+  "themeForest": "Forest",
+  "themeOcean": "Ocean",
+  "themeSunset": "Sunset",
+  "themeLightClassic": "Light Classic",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageItalian": "Italian"
 }

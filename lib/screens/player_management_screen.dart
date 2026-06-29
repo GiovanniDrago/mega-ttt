@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/game_theme.dart';
 import '../models/player.dart';
@@ -13,6 +14,7 @@ class PlayerManagementScreen extends StatefulWidget {
 class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = MyApp.of(context);
     if (state == null) return const SizedBox.shrink();
 
@@ -30,7 +32,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Manage Players',
+          l10n.managePlayers,
           style: TextStyle(color: theme.text, fontWeight: FontWeight.w600),
         ),
       ),
@@ -104,7 +106,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
             child: OutlinedButton.icon(
               onPressed: _resetLeaderboard,
               icon: const Icon(Icons.delete_sweep_rounded, size: 20),
-              label: const Text('Reset Leaderboard'),
+              label: Text(l10n.resetLeaderboard),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.red.withOpacity(0.7),
                 side: BorderSide(color: Colors.red.withOpacity(0.3)),
@@ -121,7 +123,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
             child: ElevatedButton.icon(
               onPressed: _addPlayer,
               icon: const Icon(Icons.add_rounded, size: 20),
-              label: const Text('Add Player'),
+              label: Text(l10n.addPlayer),
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.buttonBg,
                 foregroundColor: Colors.white,
@@ -157,28 +159,29 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
   void _resetLeaderboard() {
     final state = MyApp.of(context);
     if (state == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: state.theme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Reset Leaderboard', style: TextStyle(color: state.theme.text)),
+        title: Text(l10n.resetLeaderboard, style: TextStyle(color: state.theme.text)),
         content: Text(
-          'This will reset all wins, losses and draws for every player. Continue?',
+          l10n.resetLeaderboardConfirm,
           style: TextStyle(color: state.theme.text.withOpacity(0.7)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: state.theme.text.withOpacity(0.6))),
+            child: Text(l10n.cancel, style: TextStyle(color: state.theme.text.withOpacity(0.6))),
           ),
           TextButton(
             onPressed: () {
               state.resetAllScores();
               Navigator.pop(ctx);
             },
-            child: const Text('Reset', style: TextStyle(color: Colors.red)),
+            child: Text(l10n.reset, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -188,6 +191,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
   void _addPlayer() {
     final state = MyApp.of(context);
     if (state == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final controller = TextEditingController();
     showDialog(
@@ -195,7 +199,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: state.theme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('New Player', style: TextStyle(color: state.theme.text)),
+        title: Text(l10n.newPlayer, style: TextStyle(color: state.theme.text)),
         content: TextField(
           controller: controller,
           autofocus: false,
@@ -209,7 +213,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
           },
           style: TextStyle(color: state.theme.text),
           decoration: InputDecoration(
-            hintText: 'Enter name',
+            hintText: l10n.enterName,
             hintStyle: TextStyle(color: state.theme.text.withOpacity(0.4)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -224,7 +228,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: state.theme.text.withOpacity(0.6))),
+            child: Text(l10n.cancel, style: TextStyle(color: state.theme.text.withOpacity(0.6))),
           ),
           TextButton(
             onPressed: () {
@@ -234,7 +238,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
                 Navigator.pop(ctx);
               }
             },
-            child: Text('Create', style: TextStyle(color: state.theme.accent)),
+            child: Text(l10n.create, style: TextStyle(color: state.theme.accent)),
           ),
         ],
       ),
@@ -244,6 +248,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
   void _editName(Player player) {
     final state = MyApp.of(context);
     if (state == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final controller = TextEditingController(text: player.name);
     showDialog(
@@ -251,7 +256,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: state.theme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Edit Name', style: TextStyle(color: state.theme.text)),
+        title: Text(l10n.editName, style: TextStyle(color: state.theme.text)),
         content: TextField(
           controller: controller,
           autofocus: false,
@@ -265,7 +270,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
           },
           style: TextStyle(color: state.theme.text),
           decoration: InputDecoration(
-            hintText: 'Enter name',
+            hintText: l10n.enterName,
             hintStyle: TextStyle(color: state.theme.text.withOpacity(0.4)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -280,7 +285,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: state.theme.text.withOpacity(0.6))),
+            child: Text(l10n.cancel, style: TextStyle(color: state.theme.text.withOpacity(0.6))),
           ),
           TextButton(
             onPressed: () {
@@ -290,7 +295,7 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
                 Navigator.pop(ctx);
               }
             },
-            child: Text('Save', style: TextStyle(color: state.theme.accent)),
+            child: Text(l10n.save, style: TextStyle(color: state.theme.accent)),
           ),
         ],
       ),
@@ -300,28 +305,29 @@ class _PlayerManagementScreenState extends State<PlayerManagementScreen> {
   void _confirmDelete(Player player) {
     final state = MyApp.of(context);
     if (state == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: state.theme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete Player', style: TextStyle(color: state.theme.text)),
+        title: Text(l10n.deletePlayer, style: TextStyle(color: state.theme.text)),
         content: Text(
-          'Are you sure you want to delete "${player.name}"?',
+          l10n.deletePlayerConfirm(player.name),
           style: TextStyle(color: state.theme.text.withOpacity(0.7)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: state.theme.text.withOpacity(0.6))),
+            child: Text(l10n.cancel, style: TextStyle(color: state.theme.text.withOpacity(0.6))),
           ),
           TextButton(
             onPressed: () {
               state.deletePlayer(player.id);
               Navigator.pop(ctx);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
